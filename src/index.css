@@ -1,0 +1,152 @@
+:root {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #1d1d1f;
+  background: #f8f9fa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #f8f9fa 0%, #eef2f7 100%);
+}
+
+.global-banner {
+  background:
+    linear-gradient(135deg, rgba(7, 15, 31, 0.82), rgba(10, 9, 27, 0.9)),
+    radial-gradient(circle at top right, rgba(255, 193, 7, 0.15), transparent 30%),
+    url('/images/branding/header.png') center/cover no-repeat;
+}
+
+.banner-overlay {
+  backdrop-filter: saturate(110%);
+}
+
+.banner-copy {
+  color: rgba(255,255,255,0.85);
+  max-width: 700px;
+}
+
+.banner-image-card {
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.18);
+}
+
+.banner-image-card img {
+  display: block;
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.35);
+}
+
+.section-card-image,
+.section-card-image-lg,
+.section-card-image-fill {
+  width: 100%;
+  object-fit: cover;
+}
+
+.section-card-image {
+  height: 220px;
+}
+
+.section-card-image-lg {
+  height: 260px;
+}
+
+.section-card-image-fill {
+  height: 100%;
+  min-height: 100%;
+}
+
+.feature-card,
+.catalog-image-card,
+.image-slot-card {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.catalog-image-card img {
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.image-slot-card {
+  min-height: 300px;
+  border: 2px dashed rgba(255, 193, 7, 0.55);
+  background: rgba(255,255,255,0.85);
+}
+
+
+.detail-image-shell {
+  display: flex;
+  justify-content: center;
+}
+
+.detail-image-frame {
+  width: min(100%, 360px);
+  height: 220px;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(245,247,250,0.95));
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 25px rgba(15, 23, 42, 0.10), 0 0 0 1px rgba(255,255,255,0.55) inset;
+}
+
+
+.detail-main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.detail-html p:last-child {
+  margin-bottom: 0;
+}
+
+.detail-html img {
+  max-width: 100%;
+  height: auto;
+}
+
+.detail-html ul,
+.detail-html ol {
+  padding-left: 1.2rem;
+}
+
+.list-group-item.active {
+  background-color: #212529;
+  border-color: #212529;
+}
+
+@media (max-width: 991.98px) {
+  .banner-image-card img {
+    height: 240px;
+  }
+
+  .section-card-image-fill {
+    height: 320px;
+  }
+
+  .detail-image-frame {
+    height: 180px;
+  }
+}
