@@ -1,50 +1,50 @@
 import { useState } from 'react'
 import SectionTitle from '../components/SectionTitle'
 import { api } from '../services/api'
-import { saveSession } from '../services/authService'
+import { guardarSesion } from '../services/authService'
 
 function LoginPage({ setSession, navigate, setGlobalMessage }) {
-  const [mode, setMode] = useState('login')
-  const [form, setForm] = useState({ username: '', password: '' })
-  const [loading, setLoading] = useState(false)
+  const [modo, setModo] = useState('login')
+  const [formulario, setFormulario] = useState({ username: '', password: '' })
+  const [cargando, setCargando] = useState(false)
 
-  const updateField = (field, value) => setForm((prev) => ({ ...prev, [field]: value }))
+  const actualizarCampo = (campo, valor) => setFormulario((prev) => ({ ...prev, [campo]: valor }))
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    setLoading(true)
+  const manejarLogin = async (evento) => {
+    evento.preventDefault()
+    setCargando(true)
     try {
-      const data = await api.login({ username: form.username, password: form.password })
-      saveSession(data)
-      setSession(data)
-      setGlobalMessage({ type: 'success', text: `Bienvenido, ${data.username}.` })
+      const datos = await api.login({ username: formulario.username, password: formulario.password })
+      guardarSesion(datos)
+      setSession(datos)
+      setGlobalMessage({ type: 'success', text: `Bienvenido, ${datos.username}.` })
       navigate('/')
     } catch (error) {
       setGlobalMessage({ type: 'error', text: error.message })
     } finally {
-      setLoading(false)
+      setCargando(false)
     }
   }
 
-  const handleRegister = async (event) => {
-    event.preventDefault()
-    setLoading(true)
+  const manejarRegistro = async (evento) => {
+    evento.preventDefault()
+    setCargando(true)
     try {
-      const response = await api.register({
-        username: form.username,
-        password: form.password,
+      const respuesta = await api.register({
+        username: formulario.username,
+        password: formulario.password,
         rol: 'USER'
       })
       setGlobalMessage({
         type: 'success',
-        text: typeof response === 'string' ? response : 'Usuario registrado correctamente.'
+        text: typeof respuesta === 'string' ? respuesta : 'Usuario registrado correctamente.'
       })
-      setMode('login')
-      setForm({ username: '', password: '' })
+      setModo('login')
+      setFormulario({ username: '', password: '' })
     } catch (error) {
       setGlobalMessage({ type: 'error', text: error.message })
     } finally {
-      setLoading(false)
+      setCargando(false)
     }
   }
 
@@ -56,17 +56,17 @@ function LoginPage({ setSession, navigate, setGlobalMessage }) {
               <div className="card-body p-4 p-md-5">
                 <SectionTitle
                     eyebrow="Acceso"
-                    title={mode === 'login' ? 'Iniciar sesión' : 'Crear usuario'}
+                    title={modo === 'login' ? 'Iniciar sesión' : 'Crear usuario'}
                     description="Ingresá al portal para enviar contribuciones o revisar pendientes según tu rol."
                 />
 
-                <form onSubmit={mode === 'login' ? handleLogin : handleRegister} className="row g-3">
+                <form onSubmit={modo === 'login' ? manejarLogin : manejarRegistro} className="row g-3">
                   <div className="col-12">
                     <label className="form-label">Username</label>
                     <input
                         className="form-control"
-                        value={form.username}
-                        onChange={(e) => updateField('username', e.target.value)}
+                        value={formulario.username}
+                        onChange={(e) => actualizarCampo('username', e.target.value)}
                     />
                   </div>
 
@@ -75,14 +75,14 @@ function LoginPage({ setSession, navigate, setGlobalMessage }) {
                     <input
                         type="password"
                         className="form-control"
-                        value={form.password}
-                        onChange={(e) => updateField('password', e.target.value)}
+                        value={formulario.password}
+                        onChange={(e) => actualizarCampo('password', e.target.value)}
                     />
                   </div>
 
                   <div className="col-12 d-grid">
-                    <button className="btn btn-warning fw-semibold" disabled={loading}>
-                      {loading ? 'Procesando...' : mode === 'login' ? 'Iniciar sesión' : 'Registrar usuario'}
+                    <button className="btn btn-warning fw-semibold" disabled={cargando}>
+                      {cargando ? 'Procesando...' : modo === 'login' ? 'Iniciar sesión' : 'Registrar usuario'}
                     </button>
                   </div>
                 </form>
@@ -91,9 +91,9 @@ function LoginPage({ setSession, navigate, setGlobalMessage }) {
 
                 <button
                     className="btn btn-link p-0"
-                    onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
+                    onClick={() => setModo(modo === 'login' ? 'register' : 'login')}
                 >
-                  {mode === 'login'
+                  {modo === 'login'
                       ? '¿No tenés cuenta? Registrate aquí.'
                       : '¿Ya tenés cuenta? Volvé al login.'}
                 </button>

@@ -10,80 +10,80 @@ import RazasPage from './pages/RazasPage'
 import ContribuirPage from './pages/ContribuirPage'
 import MisContribucionesPage from './pages/MisContribucionesPage'
 import AdminPendientesPage from './pages/AdminPendientesPage'
-import { getStoredSession, clearSession } from './services/authService'
+import { obtenerSesionGuardada, limpiarSesion } from './services/authService'
 import { api } from './services/api'
 
-const normalizeRoute = (hash) => {
-  const value = (hash || '#/').replace('#', '')
-  return value.startsWith('/') ? value : `/${value}`
+const normalizarRuta = (hash) => {
+  const valor = (hash || '#/').replace('#', '')
+  return valor.startsWith('/') ? valor : `/${valor}`
 }
 
 function App() {
-  const [route, setRoute] = useState(normalizeRoute(window.location.hash || '#/'))
-  const [session, setSession] = useState(getStoredSession())
-  const [globalMessage, setGlobalMessage] = useState(null)
+  const [ruta, setRuta] = useState(normalizarRuta(window.location.hash || '#/'))
+  const [sesion, setSesion] = useState(obtenerSesionGuardada())
+  const [mensajeGlobal, setMensajeGlobal] = useState(null)
 
   useEffect(() => {
-    const onHashChange = () => setRoute(normalizeRoute(window.location.hash || '#/'))
-    window.addEventListener('hashchange', onHashChange)
-    return () => window.removeEventListener('hashchange', onHashChange)
+    const alCambiarHash = () => setRuta(normalizarRuta(window.location.hash || '#/'))
+    window.addEventListener('hashchange', alCambiarHash)
+    return () => window.removeEventListener('hashchange', alCambiarHash)
   }, [])
 
-  const navigate = (targetRoute) => {
-    window.location.hash = targetRoute
+  const navegar = (rutaDestino) => {
+    window.location.hash = rutaDestino
   }
 
-  const logout = async () => {
+  const cerrarSesion = async () => {
     try { await api.logout() } catch { /* ignorar */ }
-    clearSession()
-    setSession(null)
-    setGlobalMessage({ type: 'success', text: 'Sesión cerrada correctamente.' })
-    navigate('/')
+    limpiarSesion()
+    setSesion(null)
+    setMensajeGlobal({ type: 'success', text: 'Sesión cerrada correctamente.' })
+    navegar('/')
   }
 
-  const commonProps = {
-    session,
-    setSession,
-    navigate,
-    setGlobalMessage,
+  const propsComunes = {
+    session: sesion,
+    setSession: setSesion,
+    navigate: navegar,
+    setGlobalMessage: setMensajeGlobal,
   }
 
-  const page = useMemo(() => {
-    switch (route) {
+  const pagina = useMemo(() => {
+    switch (ruta) {
       case '/login':
-        return <LoginPage {...commonProps} />
+        return <LoginPage {...propsComunes} />
       case '/personajes':
-        return <PersonajesPage {...commonProps} />
+        return <PersonajesPage {...propsComunes} />
       case '/sagas':
-        return <SagasPage {...commonProps} />
+        return <SagasPage {...propsComunes} />
       case '/razas':
-        return <RazasPage {...commonProps} />
+        return <RazasPage {...propsComunes} />
       case '/contribuir':
-        return <ContribuirPage {...commonProps} />
+        return <ContribuirPage {...propsComunes} />
       case '/mis-contribuciones':
-        return <MisContribucionesPage {...commonProps} />
+        return <MisContribucionesPage {...propsComunes} />
       case '/admin/pendientes':
-        return <AdminPendientesPage {...commonProps} />
+        return <AdminPendientesPage {...propsComunes} />
       default:
-        return <HomePage {...commonProps} />
+        return <HomePage {...propsComunes} />
     }
-  }, [route, session])
+  }, [ruta, sesion])
 
   return (
     <div className="app-shell bg-body-tertiary min-vh-100 d-flex flex-column">
-      <Header session={session} navigate={navigate} onLogout={logout} />
-      <GlobalBanner route={route} navigate={navigate} />
+      <Header session={sesion} navigate={navegar} onLogout={cerrarSesion} />
+      <GlobalBanner route={ruta} navigate={navegar} />
 
       <main className="flex-grow-1">
-        {globalMessage && (
+        {mensajeGlobal && (
           <div className="container pt-3">
-            <div className={`alert alert-${globalMessage.type === 'error' ? 'danger' : 'success'} alert-dismissible fade show`} role="alert">
-              {globalMessage.text}
-              <button type="button" className="btn-close" onClick={() => setGlobalMessage(null)}></button>
+            <div className={`alert alert-${mensajeGlobal.type === 'error' ? 'danger' : 'success'} alert-dismissible fade show`} role="alert">
+              {mensajeGlobal.text}
+              <button type="button" className="btn-close" onClick={() => setMensajeGlobal(null)}></button>
             </div>
           </div>
         )}
-        {page}
+        {pagina}
       </main>
 
       <Footer />

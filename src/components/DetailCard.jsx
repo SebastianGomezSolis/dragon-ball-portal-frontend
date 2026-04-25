@@ -1,8 +1,8 @@
 function DetailCard({ item, titleField = 'nombre', badge, emptyText = 'Seleccioná un elemento para ver el detalle.' }) {
-  const title = item?.[titleField] || ''
-  const imageSrc = item?.imagenUrl || item?.imagen_url || item?.imageUrl || item?.image_url || ''
+  const titulo = item?.[titleField] || ''
+  const imagenSrc = item?.imagenUrl || item?.imagen_url || item?.imageUrl || item?.image_url || ''
 
-  const normalizedTitle = (title || '')
+  const tituloNormalizado = (titulo || '')
     .toString()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -10,7 +10,7 @@ function DetailCard({ item, titleField = 'nombre', badge, emptyText = 'Seleccion
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 
-  const fallbackByName = {
+  const fallbackPorNombre = {
     'goku': '/images/personajes/goku.jpg',
     'vegeta': '/images/personajes/vegeta.jpg',
     'gohan': '/images/personajes/gohan.jpg',
@@ -19,11 +19,11 @@ function DetailCard({ item, titleField = 'nombre', badge, emptyText = 'Seleccion
     'frieza': '/images/personajes/freezer.jpg',
   }
 
-  const finalImage = imageSrc || fallbackByName[normalizedTitle] || ''
+  const imagenFinal = imagenSrc || fallbackPorNombre[tituloNormalizado] || ''
 
   const html = (() => {
-    const raw = item?.contenidoHtml || '<p>Sin contenido.</p>'
-    return raw.replace(/^\s*<h[1-6][^>]*>.*?<\/h[1-6]>\s*/i, '')
+    const crudo = item?.contenidoHtml || '<p>Sin contenido.</p>'
+    return crudo.replace(/^\s*<h[1-6][^>]*>.*?<\/h[1-6]>\s*/i, '')
   })()
 
   return (
@@ -34,20 +34,20 @@ function DetailCard({ item, titleField = 'nombre', badge, emptyText = 'Seleccion
         ) : (
           <>
             <div className="d-flex justify-content-between align-items-start gap-3 mb-3">
-              <h4 className="card-title mb-0">{title}</h4>
+              <h4 className="card-title mb-0">{titulo}</h4>
               {badge && <span className="badge text-bg-warning">{badge}</span>}
             </div>
 
-            {finalImage && (
+            {imagenFinal && (
               <div className="detail-image-shell mb-4">
                 <div className="detail-image-frame">
                   <img
-                    src={finalImage}
-                    alt={title}
+                    src={imagenFinal}
+                    alt={titulo}
                     className="detail-main-image"
                     onError={(e) => {
-                      const shell = e.currentTarget.closest('.detail-image-shell')
-                      if (shell) shell.style.display = 'none'
+                      const contenedor = e.currentTarget.closest('.detail-image-shell')
+                      if (contenedor) contenedor.style.display = 'none'
                     }}
                   />
                 </div>

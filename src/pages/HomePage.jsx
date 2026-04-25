@@ -7,27 +7,27 @@ function HomePage({ navigate, setGlobalMessage }) {
   const [personajes, setPersonajes] = useState([])
   const [sagas, setSagas] = useState([])
   const [razas, setRazas] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [cargando, setCargando] = useState(true)
 
   useEffect(() => {
-    const loadHomeData = async () => {
+    const cargarDatosInicio = async () => {
       try {
-        const [personajesData, sagasData, razasData] = await Promise.all([
+        const [datosPersonajes, datosSagas, datosRazas] = await Promise.all([
           api.getPersonajes(),
           api.getSagas(),
           api.getRazas(),
         ])
-        setPersonajes(personajesData.slice(0, 4))
-        setSagas(sagasData.slice(0, 4))
-        setRazas(razasData.slice(0, 4))
+        setPersonajes(datosPersonajes.slice(0, 4))
+        setSagas(datosSagas.slice(0, 4))
+        setRazas(datosRazas.slice(0, 4))
       } catch (error) {
         setGlobalMessage({ type: 'error', text: error.message })
       } finally {
-        setLoading(false)
+        setCargando(false)
       }
     }
 
-    loadHomeData()
+    cargarDatosInicio()
   }, [setGlobalMessage])
 
   return (
@@ -70,7 +70,7 @@ function HomePage({ navigate, setGlobalMessage }) {
       <section className="container pb-5">
         <SectionTitle eyebrow="Contenido publicado" title="Resumen general" description="Un vistazo rápido al contenido disponible dentro del portal." />
 
-        {loading ? (
+        {cargando ? (
           <LoadingBlock />
         ) : (
           <div className="row g-4">

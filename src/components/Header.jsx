@@ -1,6 +1,6 @@
 import { formatRole } from '../utils/formatters'
 
-function NavItem({ label, href, onClick, highlight = false }) {
+function ElementoNav({ label, href, onClick, highlight = false }) {
   return (
     <li className="nav-item">
       <a className={`nav-link ${highlight ? 'fw-semibold text-warning' : ''}`} href={href} onClick={onClick}>{label}</a>
@@ -9,8 +9,8 @@ function NavItem({ label, href, onClick, highlight = false }) {
 }
 
 function Header({ session, navigate, onLogout }) {
-  const isAdmin = session?.rol === 'ADMIN'
-  const isLogged = Boolean(session)
+  const esAdmin = session?.rol === 'ADMIN'
+  const estaLogueado = Boolean(session)
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
@@ -26,17 +26,17 @@ function Header({ session, navigate, onLogout }) {
 
         <div className="collapse navbar-collapse" id="mainMenu">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <NavItem label="Inicio" href="#/" />
-            <NavItem label="Personajes" href="#/personajes" />
-            <NavItem label="Sagas" href="#/sagas" />
-            <NavItem label="Razas" href="#/razas" />
-            {isLogged && <NavItem label="Contribuir" href="#/contribuir" />}
-            {isLogged && <NavItem label="Mis contribuciones" href="#/mis-contribuciones" />}
-            {isAdmin && <NavItem label="Pendientes" href="#/admin/pendientes" highlight />}
+            <ElementoNav label="Inicio" href="#/" />
+            <ElementoNav label="Personajes" href="#/personajes" />
+            <ElementoNav label="Sagas" href="#/sagas" />
+            <ElementoNav label="Razas" href="#/razas" />
+            {estaLogueado && <ElementoNav label="Contribuir" href="#/contribuir" />}
+            {estaLogueado && <ElementoNav label="Mis contribuciones" href="#/mis-contribuciones" />}
+            {esAdmin && <ElementoNav label="Pendientes" href="#/admin/pendientes" highlight />}
           </ul>
 
           <div className="d-flex align-items-center gap-3 text-white small">
-            {isLogged ? (
+            {estaLogueado ? (
               <>
                 <div className="text-end d-none d-md-block">
                   <div className="fw-semibold">{session.username}</div>

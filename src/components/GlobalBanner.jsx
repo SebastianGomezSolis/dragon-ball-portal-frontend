@@ -73,12 +73,12 @@ const bannerConfig = {
   },
 }
 
-function resolveConfig(route) {
-  return bannerConfig[route] || bannerConfig['/']
+function resolverConfig(ruta) {
+  return bannerConfig[ruta] || bannerConfig['/']
 }
 
 function GlobalBanner({ route, navigate }) {
-  const config = resolveConfig(route)
+  const config = resolverConfig(route)
 
   return (
     <section className="global-banner text-white">

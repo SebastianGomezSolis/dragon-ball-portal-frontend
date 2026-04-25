@@ -3,8 +3,8 @@ import SectionTitle from '../components/SectionTitle'
 import { api } from '../services/api'
 
 function ContribuirPage({ session, navigate, setGlobalMessage }) {
-  const [form, setForm] = useState({ tipo: 'PERSONAJE', titulo: '', contenido: '' })
-  const [loading, setLoading] = useState(false)
+  const [formulario, setFormulario] = useState({ tipo: 'PERSONAJE', titulo: '', contenido: '' })
+  const [cargando, setCargando] = useState(false)
 
   if (!session) {
     return (
@@ -21,7 +21,7 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
     )
   }
 
-  const updateField = (field, value) => setForm((prev) => ({ ...prev, [field]: value }))
+  const actualizarCampo = (campo, valor) => setFormulario((prev) => ({ ...prev, [campo]: valor }))
 
   // 🔥 convierte texto a HTML automáticamente
   const convertirAHtml = (texto) => {
@@ -29,20 +29,20 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
     return `<p>${texto.replace(/\n/g, '</p><p>')}</p>`
   }
 
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    setLoading(true)
+  const manejarEnvio = async (evento) => {
+    evento.preventDefault()
+    setCargando(true)
 
     try {
-      const data = {
-        tipo: form.tipo,
-        titulo: form.titulo,
-        contenidoHtml: convertirAHtml(form.contenido)
+      const datos = {
+        tipo: formulario.tipo,
+        titulo: formulario.titulo,
+        contenidoHtml: convertirAHtml(formulario.contenido)
       }
 
-      await api.createContribucion(data)
+      await api.createContribucion(datos)
 
-      setForm({ tipo: 'PERSONAJE', titulo: '', contenido: '' })
+      setFormulario({ tipo: 'PERSONAJE', titulo: '', contenido: '' })
 
       setGlobalMessage({ type: 'success', text: 'Contribución enviada para revisión.' })
       navigate('/mis-contribuciones')
@@ -50,7 +50,7 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
     } catch (error) {
       setGlobalMessage({ type: 'error', text: error.message })
     } finally {
-      setLoading(false)
+      setCargando(false)
     }
   }
 
@@ -66,13 +66,13 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
                     description="Completá el formulario y enviá el contenido para revisión administrativa."
                 />
 
-                <form className="row g-3" onSubmit={handleSubmit}>
+                <form className="row g-3" onSubmit={manejarEnvio}>
                   <div className="col-md-4">
                     <label className="form-label">Tipo</label>
                     <select
                         className="form-select"
-                        value={form.tipo}
-                        onChange={(e) => updateField('tipo', e.target.value)}
+                        value={formulario.tipo}
+                        onChange={(e) => actualizarCampo('tipo', e.target.value)}
                     >
                       <option value="PERSONAJE">Personaje</option>
                       <option value="SAGA">Saga</option>
@@ -84,8 +84,8 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
                     <label className="form-label">Título</label>
                     <input
                         className="form-control"
-                        value={form.titulo}
-                        onChange={(e) => updateField('titulo', e.target.value)}
+                        value={formulario.titulo}
+                        onChange={(e) => actualizarCampo('titulo', e.target.value)}
                     />
                   </div>
 
@@ -94,15 +94,15 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
                     <textarea
                         rows="8"
                         className="form-control"
-                        value={form.contenido}
-                        onChange={(e) => updateField('contenido', e.target.value)}
+                        value={formulario.contenido}
+                        onChange={(e) => actualizarCampo('contenido', e.target.value)}
                         placeholder="Describe aquí el contenido..."
                     />
                   </div>
 
                   <div className="col-12 d-grid">
-                    <button className="btn btn-warning fw-semibold" disabled={loading}>
-                      {loading ? 'Enviando...' : 'Guardar contribución'}
+                    <button className="btn btn-warning fw-semibold" disabled={cargando}>
+                      {cargando ? 'Enviando...' : 'Guardar contribución'}
                     </button>
                   </div>
                 </form>
