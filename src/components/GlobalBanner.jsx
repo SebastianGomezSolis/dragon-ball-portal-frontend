@@ -5,7 +5,7 @@ const bannerConfig = {
     description: 'Consultá personajes, sagas y razas; iniciá sesión para enviar contenido y administrá revisiones desde el panel correspondiente.',
     buttonLabel: 'Explorar personajes',
     buttonRoute: '/personajes',
-    image: '/images/pages/goku.jpg',
+    image: '/images/pages/inicio.jpg',
     imageAlt: 'Goku Ultra Instinto',
   },
   '/personajes': {
@@ -41,7 +41,7 @@ const bannerConfig = {
     description: 'Enviá aportes con formato HTML para que el equipo administrador los revise y publique.',
     buttonLabel: 'Mis contribuciones',
     buttonRoute: '/mis-contribuciones',
-    image: '/images/pages/personajes.png',
+    image: '/images/pages/contribuir.jpg',
     imageAlt: 'Personajes de Dragon Ball',
   },
   '/mis-contribuciones': {
@@ -50,7 +50,7 @@ const bannerConfig = {
     description: 'Consultá el estado de cada envío y las observaciones del administrador.',
     buttonLabel: 'Enviar aporte',
     buttonRoute: '/contribuir',
-    image: '/images/pages/goku.jpg',
+    image: '/images/pages/mis-contribuciones.jpg',
     imageAlt: 'Goku Ultra Instinto',
   },
   '/admin/pendientes': {
@@ -59,7 +59,7 @@ const bannerConfig = {
     description: 'Aprobá o rechazá los contenidos pendientes para mantener actualizado el portal.',
     buttonLabel: 'Ver inicio',
     buttonRoute: '/',
-    image: '/images/pages/sagas.jpg',
+    image: '/images/pages/pendientes.jpg',
     imageAlt: 'Saga Dragon Ball',
   },
   '/login': {
@@ -68,7 +68,7 @@ const bannerConfig = {
     description: 'Autenticáte para enviar contribuciones, revisar tu panel personal o administrar contenido.',
     buttonLabel: 'Volver al inicio',
     buttonRoute: '/',
-    image: '/images/pages/goku.jpg',
+    image: '/images/pages/login.jpg',
     imageAlt: 'Goku',
   },
 }
