@@ -37,7 +37,7 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
       const data = {
         tipo: form.tipo,
         titulo: form.titulo,
-        contenidoHtml: convertirAHtml(form.contenido) // 🔥 aquí está el cambio clave
+        contenidoHtml: convertirAHtml(form.contenido)
       }
 
       await api.createContribucion(data)
@@ -89,7 +89,6 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
                     />
                   </div>
 
-                  {/* 🔥 AQUÍ EL CAMBIO IMPORTANTE */}
                   <div className="col-12">
                     <label className="form-label">Contenido</label>
                     <textarea
@@ -113,11 +112,6 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
 
           <div className="col-xl-5">
             <div className="card shadow-sm border-0 h-100">
-              <img
-                  src="/images/pages/personajes.png"
-                  className="card-img-top section-card-image-lg"
-                  alt="Personajes Dragon Ball"
-              />
               <div className="card-body">
                 <h4 className="fw-bold">Recomendaciones</h4>
                 <ul className="mb-0 text-secondary">

@@ -11,12 +11,12 @@ function DetailCard({ item, titleField = 'nombre', badge, emptyText = 'Seleccion
     .replace(/^-+|-+$/g, '')
 
   const fallbackByName = {
-    'goku': '/images/gallery/goku.jpg',
-    'vegeta': '/images/gallery/vegeta.jpg',
-    'gohan': '/images/gallery/gohan.jpg',
-    'piccolo': '/images/gallery/piccolo.jpg',
-    'freezer': '/images/gallery/freezer.jpg',
-    'frieza': '/images/gallery/freezer.jpg',
+    'goku': '/images/personajes/goku.jpg',
+    'vegeta': '/images/personajes/vegeta.jpg',
+    'gohan': '/images/personajes/gohan.jpg',
+    'piccolo': '/images/personajes/piccolo.jpg',
+    'freezer': '/images/personajes/freezer.jpg',
+    'frieza': '/images/personajes/freezer.jpg',
   }
 
   const finalImage = imageSrc || fallbackByName[normalizedTitle] || ''

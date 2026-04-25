@@ -11,6 +11,7 @@ import ContribuirPage from './pages/ContribuirPage'
 import MisContribucionesPage from './pages/MisContribucionesPage'
 import AdminPendientesPage from './pages/AdminPendientesPage'
 import { getStoredSession, clearSession } from './services/authService'
+import { api } from './services/api'
 
 const normalizeRoute = (hash) => {
   const value = (hash || '#/').replace('#', '')
@@ -32,7 +33,8 @@ function App() {
     window.location.hash = targetRoute
   }
 
-  const logout = () => {
+  const logout = async () => {
+    try { await api.logout() } catch { /* ignorar */ }
     clearSession()
     setSession(null)
     setGlobalMessage({ type: 'success', text: 'Sesión cerrada correctamente.' })

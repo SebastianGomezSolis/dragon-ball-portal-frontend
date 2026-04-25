@@ -1,5 +1,3 @@
-import { getToken } from './authService'
-
 const API_BASE = 'http://localhost:8080/api'
 
 async function request(path, options = {}) {
@@ -8,14 +6,10 @@ async function request(path, options = {}) {
     ...(options.headers || {}),
   }
 
-  const token = getToken()
-  if (token) {
-    headers.Authorization = `Bearer ${token}`
-  }
-
   const response = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers,
+    credentials: 'include',
   })
 
   const text = await response.text()
@@ -37,6 +31,7 @@ async function request(path, options = {}) {
 export const api = {
   login: (payload) => request('/auth/login', { method: 'POST', body: JSON.stringify(payload) }),
   register: (payload) => request('/auth/register', { method: 'POST', body: JSON.stringify(payload) }),
+  logout: () => request('/auth/logout', { method: 'POST' }),
   getPersonajes: (nombre = '') => request(`/personajes${nombre ? `?nombre=${encodeURIComponent(nombre)}` : ''}`),
   getSagas: (nombre = '') => request(`/sagas${nombre ? `?nombre=${encodeURIComponent(nombre)}` : ''}`),
   getRazas: (nombre = '') => request(`/razas${nombre ? `?nombre=${encodeURIComponent(nombre)}` : ''}`),

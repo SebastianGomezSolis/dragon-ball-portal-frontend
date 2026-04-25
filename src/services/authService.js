@@ -18,8 +18,3 @@ export function saveSession(data) {
 export function clearSession() {
   sessionStorage.removeItem(SESSION_KEY)
 }
-
-export function getToken() {
-  const session = getStoredSession()
-  return session?.token || null
-}
