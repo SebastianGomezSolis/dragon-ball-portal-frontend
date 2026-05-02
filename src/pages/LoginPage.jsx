@@ -5,7 +5,13 @@ import { guardarSesion } from '../services/authService'
 
 function LoginPage({ setSession, navigate, setGlobalMessage }) {
   const [modo, setModo] = useState('login')
-  const [formulario, setFormulario] = useState({ username: '', password: '' })
+  const [formulario, setFormulario] = useState({
+    username: localStorage.getItem('dbportal.username') ?? '',
+    password: localStorage.getItem('dbportal.password') ?? '',
+  })
+  const [recordar, setRecordar] = useState(
+      () => localStorage.getItem('dbportal.recordar') === 'true'
+  )
   const [cargando, setCargando] = useState(false)
 
   const actualizarCampo = (campo, valor) => setFormulario((prev) => ({ ...prev, [campo]: valor }))
@@ -15,6 +21,17 @@ function LoginPage({ setSession, navigate, setGlobalMessage }) {
     setCargando(true)
     try {
       const datos = await api.login({ username: formulario.username, password: formulario.password })
+
+      if (recordar) {
+        localStorage.setItem('dbportal.recordar', 'true')
+        localStorage.setItem('dbportal.username', formulario.username)
+        localStorage.setItem('dbportal.password', formulario.password)
+      } else {
+        localStorage.removeItem('dbportal.recordar')
+        localStorage.removeItem('dbportal.username')
+        localStorage.removeItem('dbportal.password')
+      }
+
       guardarSesion(datos)
       setSession(datos)
       setGlobalMessage({ type: 'success', text: `Bienvenido, ${datos.username}.` })
@@ -79,6 +96,21 @@ function LoginPage({ setSession, navigate, setGlobalMessage }) {
                         onChange={(e) => actualizarCampo('password', e.target.value)}
                     />
                   </div>
+
+                  {modo === 'login' && (
+                      <div className="col-12 d-flex align-items-center gap-2">
+                        <input
+                            type="checkbox"
+                            id="recordar"
+                            className="form-check-input m-0"
+                            checked={recordar}
+                            onChange={(e) => setRecordar(e.target.checked)}
+                        />
+                        <label htmlFor="recordar" className="form-check-label">
+                          Recordar credenciales
+                        </label>
+                      </div>
+                  )}
 
                   <div className="col-12 d-grid">
                     <button className="btn btn-warning fw-semibold" disabled={cargando}>

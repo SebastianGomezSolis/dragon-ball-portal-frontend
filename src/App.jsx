@@ -10,6 +10,7 @@ import RazasPage from './pages/RazasPage'
 import ContribuirPage from './pages/ContribuirPage'
 import MisContribucionesPage from './pages/MisContribucionesPage'
 import AdminPendientesPage from './pages/AdminPendientesPage'
+import CompararPage from './pages/CompararPage'
 import { obtenerSesionGuardada, limpiarSesion } from './services/authService'
 import { api } from './services/api'
 
@@ -64,30 +65,32 @@ function App() {
         return <MisContribucionesPage {...propsComunes} />
       case '/admin/pendientes':
         return <AdminPendientesPage {...propsComunes} />
+      case '/comparar':
+        return <CompararPage {...propsComunes} />
       default:
         return <HomePage {...propsComunes} />
     }
   }, [ruta, sesion])
 
   return (
-    <div className="app-shell bg-body-tertiary min-vh-100 d-flex flex-column">
-      <Header session={sesion} navigate={navegar} onLogout={cerrarSesion} />
-      <GlobalBanner route={ruta} navigate={navegar} />
+      <div className="app-shell bg-body-tertiary min-vh-100 d-flex flex-column">
+        <Header session={sesion} navigate={navegar} onLogout={cerrarSesion} />
+        <GlobalBanner route={ruta} navigate={navegar} />
 
-      <main className="flex-grow-1">
-        {mensajeGlobal && (
-          <div className="container pt-3">
-            <div className={`alert alert-${mensajeGlobal.type === 'error' ? 'danger' : 'success'} alert-dismissible fade show`} role="alert">
-              {mensajeGlobal.text}
-              <button type="button" className="btn-close" onClick={() => setMensajeGlobal(null)}></button>
-            </div>
-          </div>
-        )}
-        {pagina}
-      </main>
+        <main className="flex-grow-1">
+          {mensajeGlobal && (
+              <div className="container pt-3">
+                <div className={`alert alert-${mensajeGlobal.type === 'error' ? 'danger' : 'success'} alert-dismissible fade show`} role="alert">
+                  {mensajeGlobal.text}
+                  <button type="button" className="btn-close" onClick={() => setMensajeGlobal(null)}></button>
+                </div>
+              </div>
+          )}
+          {pagina}
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
   )
 }
 

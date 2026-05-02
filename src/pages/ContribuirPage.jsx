@@ -1,10 +1,65 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import SectionTitle from '../components/SectionTitle'
 import { api } from '../services/api'
 
+function EditorQuill({ onChange }) {
+  const contenedorRef = useRef(null)
+  const quillRef = useRef(null)
+  const onChangeRef = useRef(onChange)
+
+  useEffect(() => { onChangeRef.current = onChange }, [onChange])
+
+  useEffect(() => {
+    if (!contenedorRef.current || quillRef.current) return
+    if (typeof window.Quill === 'undefined') return
+
+    const quill = new window.Quill(contenedorRef.current, {
+      theme: 'snow',
+      placeholder: 'Describí el personaje, saga o raza con detalle...',
+      modules: {
+        toolbar: [
+          [{ header: [2, 3, false] }],
+          ['bold', 'italic', 'underline'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['blockquote', 'clean'],
+        ],
+      },
+    })
+
+    quill.on('text-change', () => {
+      onChangeRef.current(quill.root.innerHTML)
+    })
+
+    quillRef.current = quill
+  }, [])
+
+  return (
+      <div
+          ref={contenedorRef}
+          style={{ minHeight: '220px', background: '#fff', borderRadius: '0 0 6px 6px' }}
+      />
+  )
+}
+
 function ContribuirPage({ session, navigate, setGlobalMessage }) {
-  const [formulario, setFormulario] = useState({ tipo: 'PERSONAJE', titulo: '', contenido: '' })
+  const [formulario, setFormulario] = useState({ tipo: 'PERSONAJE', titulo: '' })
+  const [contenidoHtml, setContenidoHtml] = useState('')
   const [cargando, setCargando] = useState(false)
+  const [quillListo, setQuillListo] = useState(false)
+
+  useEffect(() => {
+    if (typeof window.Quill !== 'undefined') {
+      setQuillListo(true)
+      return
+    }
+    const intervalo = setInterval(() => {
+      if (typeof window.Quill !== 'undefined') {
+        setQuillListo(true)
+        clearInterval(intervalo)
+      }
+    }, 100)
+    return () => clearInterval(intervalo)
+  }, [])
 
   if (!session) {
     return (
@@ -21,32 +76,37 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
     )
   }
 
-  const actualizarCampo = (campo, valor) => setFormulario((prev) => ({ ...prev, [campo]: valor }))
+  const actualizarCampo = (campo, valor) =>
+      setFormulario((prev) => ({ ...prev, [campo]: valor }))
 
-  // 🔥 convierte texto a HTML automáticamente
-  const convertirAHtml = (texto) => {
-    if (!texto) return ""
-    return `<p>${texto.replace(/\n/g, '</p><p>')}</p>`
+  const esVacio = (html) => {
+    const texto = html.replace(/<[^>]*>/g, '').replace(/\s/g, '')
+    return texto.length === 0
   }
 
   const manejarEnvio = async (evento) => {
     evento.preventDefault()
-    setCargando(true)
 
+    if (!formulario.titulo.trim()) {
+      setGlobalMessage({ type: 'error', text: 'El título es requerido.' })
+      return
+    }
+
+    if (esVacio(contenidoHtml)) {
+      setGlobalMessage({ type: 'error', text: 'El contenido no puede estar vacío.' })
+      return
+    }
+
+    setCargando(true)
     try {
-      const datos = {
+      await api.createContribucion({
         tipo: formulario.tipo,
         titulo: formulario.titulo,
-        contenidoHtml: convertirAHtml(formulario.contenido)
-      }
-
-      await api.createContribucion(datos)
-
-      setFormulario({ tipo: 'PERSONAJE', titulo: '', contenido: '' })
+        contenidoHtml,
+      })
 
       setGlobalMessage({ type: 'success', text: 'Contribución enviada para revisión.' })
       navigate('/mis-contribuciones')
-
     } catch (error) {
       setGlobalMessage({ type: 'error', text: error.message })
     } finally {
@@ -86,18 +146,17 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
                         className="form-control"
                         value={formulario.titulo}
                         onChange={(e) => actualizarCampo('titulo', e.target.value)}
+                        placeholder="Ej: Broly, Saga del Torneo del Poder, Saiyajin..."
                     />
                   </div>
 
                   <div className="col-12">
                     <label className="form-label">Contenido</label>
-                    <textarea
-                        rows="8"
-                        className="form-control"
-                        value={formulario.contenido}
-                        onChange={(e) => actualizarCampo('contenido', e.target.value)}
-                        placeholder="Describe aquí el contenido..."
-                    />
+                    {quillListo ? (
+                        <EditorQuill onChange={setContenidoHtml} />
+                    ) : (
+                        <div className="border rounded p-3 text-secondary">Cargando editor...</div>
+                    )}
                   </div>
 
                   <div className="col-12 d-grid">
@@ -113,11 +172,19 @@ function ContribuirPage({ session, navigate, setGlobalMessage }) {
           <div className="col-xl-5">
             <div className="card shadow-sm border-0 h-100">
               <div className="card-body">
-                <h4 className="fw-bold">Recomendaciones</h4>
-                <ul className="mb-0 text-secondary">
-                  <li>Usá un título claro.</li>
-                  <li>Escribí el contenido de forma simple y clara.</li>
-                  <li>Separá ideas con saltos de línea.</li>
+                <h4 className="fw-bold mb-3">Recomendaciones</h4>
+                <ul className="text-secondary mb-0">
+                  <li className="mb-2">Usá un título claro y específico.</li>
+                  <li className="mb-2">Podés usar <strong>negrita</strong>, <em>cursiva</em> y listas para organizar el contenido.</li>
+                  <li className="mb-2">Describí el personaje o saga con detalle: origen, poderes, historia.</li>
+                  <li className="mb-2">El administrador revisará el contenido antes de publicarlo.</li>
+                </ul>
+                <hr />
+                <h6 className="fw-semibold mb-2">Tipos disponibles</h6>
+                <ul className="text-secondary mb-0 small">
+                  <li><strong>Personaje:</strong> héroes, villanos, personajes secundarios.</li>
+                  <li><strong>Saga:</strong> arcos argumentales de la serie.</li>
+                  <li><strong>Raza:</strong> especies del universo Dragon Ball.</li>
                 </ul>
               </div>
             </div>
